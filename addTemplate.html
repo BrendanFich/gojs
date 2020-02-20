@@ -1,149 +1,168 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>
-    </title>
-    <link href="/static/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/ligerUI/skins/Silvery/css/style.css" rel="stylesheet" type="text/css"/>
-    <script src="/static/jquery/jquery-1.3.2.min.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/core/base.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerForm.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerDateEditor.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerComboBox.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerButton.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerRadio.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerSpinner.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerTextBox.js" type="text/javascript"></script>
-    <script src="/static/ligerUI/js/plugins/ligerTip.js" type="text/javascript"></script>
-    <script src="/static/jquery-validation/jquery.validate.min.js" type="text/javascript"></script>
-    <script src="/static/jquery-validation/jquery.metadata.js" type="text/javascript"></script>
-    <script src="/static/jquery-validation/messages_cn.js" type="text/javascript"></script>
 
-    <script type="text/javascript">
-        var eee;
-        $(function () {
-            $.metadata.setType("attr", "validate");
-            var v = $("form").validate({
-                debug: true,
-                errorPlacement: function (lable, element) {
-                    if (element.hasClass("l-textarea")) {
-                        element.ligerTip({content: lable.html(), target: element[0]});
-                    } else if (element.hasClass("l-text-field")) {
-                        element.parent().ligerTip({content: lable.html(), target: element[0]});
-                    } else {
-                        lable.appendTo(element.parents("td:first").next("td"));
-                    }
-                },
-                success: function (lable) {
-                    lable.ligerHideTip();
-                    lable.remove();
-                },
-                submitHandler: function () {
-                    document.form1.submit();
-                }
-            });
-            $("form").ligerForm();
-            $(".l-button-test").click(function () {
-                alert(v.element($("#txtName")));
-            });
-        });
+<head>
+  <title>
+  </title>
+  <link href="static/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+  <link href="static/ligerUI/skins/Silvery/css/style.css" rel="stylesheet" type="text/css" />
+  <script src="static/jquery/jquery-1.3.2.min.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/core/base.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerForm.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerDateEditor.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerComboBox.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerCheckBox.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerButton.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerRadio.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerSpinner.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerTextBox.js" type="text/javascript"></script>
+  <script src="static/ligerUI/js/plugins/ligerTip.js" type="text/javascript"></script>
+  <script src="static/jquery-validation/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="static/jquery-validation/jquery.metadata.js" type="text/javascript"></script>
+  <script src="static/jquery-validation/messages_cn.js" type="text/javascript"></script>
 
-
-        var upflag = {{.errormsg}};
-
-        if (upflag != "") {
-            if (upflag == "保存成功") {
-                parent.window.loadtree();
-                $(".l-bar-button.l-bar-btnload", window.parent.document).click();
-                parent.$.ligerDialog.close();
-                parent.$(".l-dialog,.l-window-mask").remove();
-
-            } else {
-                alert(upflag);
-            }
+  <script type="text/javascript">
+    var eee;
+    $(function () {
+      $.metadata.setType("attr", "validate");
+      var v = $("form").validate({
+        debug: true,
+        errorPlacement: function (lable, element) {
+          if (element.hasClass("l-textarea")) {
+            element.ligerTip({ content: lable.html(), target: element[0] });
+          } else if (element.hasClass("l-text-field")) {
+            element.parent().ligerTip({ content: lable.html(), target: element[0] });
+          } else {
+            lable.appendTo(element.parents("td:first").next("td"));
+          }
+        },
+        success: function (lable) {
+          lable.ligerHideTip();
+          lable.remove();
+        },
+        submitHandler: function () {
+          // document.form1.submit();
+          
+          console.log("TCL: window.parent.document", parent.window.myDiagram)
+          // flash($("#ItemName").val(), $("#TemplateCode").val(), oldTemplateData)
+        // dialog.hide()
+        // $.ligerDialog.hide()
         }
+      });
+      $("form").ligerForm();
+      $(".l-button-test").click(function () {
+        alert(v.element($("#txtName")));
+      });
+    });
+    function  flash(newItemName, newTemplateCode, oldTemplateData) {
+      var model = parent.window.myDiagram.model;
+      //所有模型更改都应该在事务模型中进行
+      model.startTransaction("flash");
+      var data = model.nodeDataArray.filter( x => {
+        return x.key === oldTemplateData.key
+      })[0]
+      model.setDataProperty(oldTemplateData, "name", newItemName); // 修改属性
+      model.setDataProperty(oldTemplateData, "code", newTemplateCode); // 修改属性
+      model.commitTransaction("flash");
+    }
 
-    </script>
-    <style type="text/css">
-        body {
-            font-size: 12px;
-        }
+    // var upflag = {{.errormsg }};
 
-        .l-table-edit {
-        }
+    // if (upflag != "") {
+    //   if (upflag == "保存成功") {
+    //     parent.window.loadtree();
+    //     $(".l-bar-button.l-bar-btnload", window.parent.document).click();
+    //     parent.$.ligerDialog.close();
+    //     parent.$(".l-dialog,.l-window-mask").remove();
 
-        .l-table-edit-td {
-            padding: 4px;
-        }
+    //   } else {
+    //     alert(upflag);
+    //   }
+    // }
 
-        .l-button-submit, .l-button-test {
-            width: 80px;
-            float: left;
-            margin-left: 10px;
-            padding-bottom: 2px;
-        }
+  </script>
+  <style type="text/css">
+    body {
+      font-size: 12px;
+    }
 
-        .l-verify-tip {
-            left: 230px;
-            top: 120px;
-        }
-    </style>
+    .l-table-edit {}
 
-    <style>
-        input {
-            border: 1px solid #333333;
-            color: #666666;
-            background: #eeeeee;
-            font: normal 12px Tahoma;
-            height: 18px
-        }
-    </style>
+    .l-table-edit-td {
+      padding: 4px;
+    }
+
+    .l-button-submit,
+    .l-button-test {
+      width: 80px;
+      float: left;
+      margin-left: 10px;
+      padding-bottom: 2px;
+    }
+
+    .l-verify-tip {
+      left: 230px;
+      top: 120px;
+    }
+  </style>
+
+  <style>
+    input {
+      border: 1px solid #333333;
+      color: #666666;
+      background: #eeeeee;
+      font: normal 12px Tahoma;
+      height: 18px
+    }
+  </style>
 
 </head>
 
 <body style="padding:10px">
 
-<form name="form1" id="form1" method="post" style="width:700px" action="/interface/router/comp/addTemplate"
-      enctype="multipart/form-data">
+  <form name="form1" id="form1" method="post" style="width:700px" action="/interface/router/comp/addTemplate"
+    enctype="multipart/form-data">
     <div>
     </div>
     <table cellpadding="0" cellspacing="0" class="l-table-edit">
-        <tr>
-            <td align="right" class="l-table-edit-td" style="width:100px">控件名称:</td>
-            <td align="left" class="l-table-edit-td" style="width:360px">
-                <input name="ItemName" type="text" id="ItemName" ltype="text" value="{{.item.Name}}"
-                       validate="{required:true,minlength:1,maxlength:20}"/>
-                <input name="id" type="hidden" id="id" value="{{.item.ID}}"/>
-                <input name="nodeid" type="hidden" id="nodeid" value="{{.nodeid}}"/>
-            </td>
-            <td align="left" style="width:160px">
-            </td>
-        </tr>
+      <tr>
+        <td align="right" class="l-table-edit-td" style="width:100px">控件名称:</td>
+        <td align="left" class="l-table-edit-td" style="width:360px">
+          <input name="ItemName" type="text" id="ItemName" ltype="text" value="{{.item.Name}}"
+            validate="{required:true,minlength:1,maxlength:20}" />
+          <input name="id" type="hidden" id="id" value="{{.item.ID}}" />
+          <input name="nodeid" type="hidden" id="nodeid" value="{{.nodeid}}" />
+        </td>
+        <td align="left" style="width:160px">
+        </td>
+      </tr>
 
-        <tr>
-            <td align="right" class="l-table-edit-td" style="width:100px">模板代码:</td>
-            <td align="left" class="l-table-edit-td" colspan="2" style="width:360px">
-                <textarea id="TemplateCode" name="TemplateCode" cols="250" rows="20" class="l-textarea"
-                          style="width:99%">{{.item.TemplateCode}}</textarea>
-            </td>
-        </tr>
+      <tr>
+        <td align="right" class="l-table-edit-td" style="width:100px">模板代码:</td>
+        <td align="left" class="l-table-edit-td" colspan="2" style="width:360px">
+          <textarea id="TemplateCode" name="TemplateCode" cols="250" rows="20" class="l-textarea"
+            style="width:99%">{{.item.TemplateCode}}</textarea>
+        </td>
+      </tr>
 
-        <tr>
-            <td align="right" class="l-table-edit-td">
-            </td>
-            <td align="left" class="l-table-edit-td" style="width:160px">
-                <input type="submit" value="提交" id="Button1" class="l-button l-button-submit" name="btnsubmit"/>
-            </td>
-            <td align="right">
-            </td>
-        </tr>
+      <tr>
+        <td align="right" class="l-table-edit-td">
+        </td>
+        <td align="left" class="l-table-edit-td" style="width:160px">
+          <input type="submit" value="提交" id="Button1" class="l-button l-button-submit" name="btnsubmit" />
+        </td>
+        <td align="right">
+        </td>
+      </tr>
 
     </table>
-</form>
-<div style="display:none">
-    <!--  数据统计代码 --></div>
+  </form>
+  <div style="display:none">
+    <!--  数据统计代码 -->
+  </div>
 
 </body>
+
 </html>
