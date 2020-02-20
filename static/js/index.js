@@ -59,7 +59,7 @@ function init() {
     "undoManager.isEnabled": true
   });
   // 当图表发生改变时，save按钮转变成可点击状态，同时页面标题末尾添加*（表示已编辑未保存状态）
-  myDiagram.addDiagramListener("Modified", function(e) {
+  myDiagram.addDiagramListener("Modified", function (e) {
     var button = document.getElementById("SaveButton");
     if (button) button.disabled = !myDiagram.isModified;
     var idx = document.title.indexOf("*");
@@ -69,6 +69,22 @@ function init() {
       if (idx >= 0) document.title = document.title.substr(0, idx);
     }
   });
+  myDiagram.addModelChangedListener(function (evt) {
+    if (!evt.isTransactionFinished) return;
+    var txn = evt.object;
+    if (txn === null) return;
+    txn.changes.each(function (e) {
+      if (e.modelChange !== "nodeDataArray") return;
+      if (e.change === go.ChangedEvent.Insert) {
+        console.log(evt.propertyName + " added node with key: " + e.newValue.key);
+        showDialog(e.No)
+      } else if (e.change === go.ChangedEvent.Remove) {
+        console.log(evt.propertyName + " removed node with key: " + e.oldValue.key);
+        
+      }
+    });
+
+  })
   function makePort(name, spot, output, input) {
     return objGo(go.Shape, "Circle", {
       fill: null,
@@ -90,9 +106,13 @@ function init() {
     "Spot",
     { locationSpot: go.Spot.Center },
     {
-      doubleClick: function(e, node) {
+      doubleClick: function (e, node) {
         // alert("双击");
-        showDialog(e,node)
+        console.log("TCL: init -> node.findNodesOutOf()", node.findLinksConnected().count)
+        showDialog(node.hb)
+      },
+      contextClick: function() {
+        alert('右键')
       }
     },
     new go.Binding("location", "loc", go.Point.parse).makeTwoWay(
@@ -137,14 +157,14 @@ function init() {
         objGo(
           go.TextBlock,
           {
-            font: "bold 10pt Helvetica, Arial, sans-serif",
+            font: "bold 8pt Helvetica, Arial, sans-serif",
             textAlign: "center",
             maxSize: new go.Size(65, NaN),
             minSize: new go.Size(65, NaN),
             wrap: go.TextBlock.WrapFit
             // editable: true
           },
-          new go.Binding("text","Name").makeTwoWay()
+          new go.Binding("text", "name").makeTwoWay()
         )
       )
     ),
@@ -153,17 +173,17 @@ function init() {
     makePort("R", go.Spot.Right, true, true),
     makePort("B", go.Spot.Bottom, true, true),
     {
-      mouseEnter: function(e, node) {
+      mouseEnter: function (e, node) {
         showSmallPorts(node, true);
       },
-      mouseLeave: function(e, node) {
+      mouseLeave: function (e, node) {
         showSmallPorts(node, false);
       }
     }
   );
 
   function showSmallPorts(node, show) {
-    node.ports.each(function(port) {
+    node.ports.each(function (port) {
       if (port.portId !== "") {
         // don't change the default port, which is the big shape
         port.fill = show ? "rgba(0,0,0,.3)" : null;
@@ -215,7 +235,7 @@ function init() {
         go.TextBlock,
         {
           textAlign: "start",
-          font: "bold 10pt helvetica, arial, sans-serif",
+          font: "bold 8pt helvetica, arial, sans-serif",
           stroke: "#000",
           editable: true
         },
@@ -228,22 +248,32 @@ function init() {
     maxSelectionCount: 1,
     nodeTemplateMap: myDiagram.nodeTemplateMap,
     model: new go.GraphLinksModel([
-      { Name: "No Operation", TemplateCode: "ss", source: "static/img/NoOperation.gif" },
-      { Name: "Encoding", TemplateCode: "ss", source: "static/img/Encoding.gif" },
-      { Name: "Json2Xml", TemplateCode: "ss", source: "static/img/Json2Xml.gif" },
-      { Name: "Xml2Json", TemplateCode: "ss", source: "static/img/Xml2Json.gif" },
-      { Name: "Template", TemplateCode: "ss", source: "static/img/Template.gif" },
-      { Name: "Datebase", TemplateCode: "ss", source: "static/img/Datebase.gif" },
-      { Name: "Http Client", TemplateCode: "ss", source: "static/img/HttpClient.gif" },
-      { Name: "Soap Client", TemplateCode: "ss", source: "static/img/SoapClient.gif" }
+      { name: "NoOperation", code: "ss", type: 'No Operation', source: "static/img/NoOperation.gif" },
+      { name: "Encoding", code: "ss", type: 'Encoding', source: "static/img/Encoding.gif" },
+      { name: "Json2Xml", code: "ss", type: 'Json2Xml', source: "static/img/Json2Xml.gif" },
+      { name: "Xml2Json", code: "ss", type: 'Xml2Json', source: "static/img/Xml2Json.gif" },
+      { name: "Template", code: "ss", type: 'Template', source: "static/img/Template.gif" },
+      { name: "Datebase", code: "ss", type: 'Datebase', source: "static/img/Datebase.gif" },
+      { name: "HttpClient", code: "ss", type: 'Http Client', source: "static/img/HttpClient.gif" },
+      { name: "SoapClient", code: "ss", type: 'Soap Client', source: "static/img/SoapClient.gif" }
     ])
   });
 }
 
 function save() {
-  saveDiagramProperties();
-  document.getElementById("mySavedModel").value = myDiagram.model.toJson();
-  myDiagram.isModified = false;
+  var isVerified = true
+  myDiagram.nodes.each(function (node) {
+    var temp = node.linksConnected.count > 0 
+    isVerified = isVerified && temp
+  });
+  if (isVerified) {
+    saveDiagramProperties();
+    document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+    myDiagram.isModified = false;
+    $.ligerDialog.success('提交成功')
+  } else {
+    $.ligerDialog.error('存在未连接的控件')
+  }
 }
 
 function load() {

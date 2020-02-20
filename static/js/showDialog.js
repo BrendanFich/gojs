@@ -1,21 +1,20 @@
-function showDialog(e,node) {
-  var templateData = node.hb
-  $("#ItemName").val(templateData.Name)
-  $("#TemplateCode").val(templateData.TemplateCode)
+function showDialog(templateData) {
+  $("#ItemName").val(templateData.name)
+  $("#TemplateCode").val(templateData.code)
   $.ligerDialog.open({
-    target: $("#showKey"),
-    title: "添加控件Template",
+    target: $("#dialog"),
+    title: "添加控件"+ templateData.type,
     width: 750,
-    height: 500,
+    height: 480,
     isResize: true,
     modal: true,
     buttons: [
-      // { text: "关闭", onclick: function(i, d) {$.ligerDialog.close} }
+      { text: '取消', onclick: function (item, dialog) { dialog.hide(); } }
     ]
   });
   $(function () {
     $.metadata.setType("attr", "validate");
-    var v = $("form").validate({
+    var v = $("#form1").validate({
       debug: true,
       errorPlacement: function (lable, element) {
         if (element.hasClass("l-textarea")) {
@@ -31,11 +30,13 @@ function showDialog(e,node) {
         lable.remove();
       },
       submitHandler: function (e) {
-        // document.form1.submit();
+        // document.form1.submit()
         flash($("#ItemName").val(),$("#TemplateCode").val(),templateData)
+        // dialog.hide()
+        $.ligerDialog.hide()
       }
     });
-    $("form").ligerForm();
+    $("#form1").ligerForm();
     $(".l-button-test").click(function () {
       alert(v.element($("#txtName")));
     });
@@ -48,8 +49,8 @@ function  flash(newItemName, newTemplateCode, oldTemplateData) {
   var data = model.nodeDataArray.filter( x => {
     return x.key === oldTemplateData.key
   })[0]
-  model.setDataProperty(oldTemplateData, "Name", newItemName); // 修改属性
-  model.setDataProperty(oldTemplateData, "TemplateCode", newTemplateCode); // 修改属性
+  model.setDataProperty(oldTemplateData, "name", newItemName); // 修改属性
+  model.setDataProperty(oldTemplateData, "code", newTemplateCode); // 修改属性
   model.commitTransaction("flash");
 }
 
