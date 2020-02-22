@@ -245,6 +245,7 @@ function init() {
     maxSelectionCount: 1,
     nodeTemplateMap: myDiagram.nodeTemplateMap,
     model: new go.GraphLinksModel([
+      // 右侧选择框和弹窗类型都由此处type相关联
       { name: "NoOperation", type: 'No-operation' },
       { name: "Encoding", type: 'Character Encoding Translator' },
       { name: "Json2Xml", type: 'Json Transform To Xml' },
@@ -290,61 +291,84 @@ function loadDiagramProperties() {
 }
 
 function showDialog(templateData, openStyle) {
-  $("#ItemName").val(templateData.name)
-  $("#TemplateCode").val(templateData.code)
-  var title, url
+  var title, buttons, url, width, height
+
+  if(openStyle === 'add') {
+    title = "添加控件"+ templateData.name
+    buttons = [
+      {
+        text: '取消',
+        onclick: function (item, dialog) {
+          myDiagram.commandHandler.deleteSelection()
+          $.ligerDialog.close();
+          $(".l-dialog,.l-window-mask").hide();
+        }
+      }
+    ]
+  } else {
+    title = "编辑控件"+ templateData.name
+    buttons = [
+      {
+        text: '删除',
+        onclick: function (item, dialog) {
+          myDiagram.commandHandler.deleteSelection()
+          $.ligerDialog.close();
+          $(".l-dialog,.l-window-mask").hide();
+        }
+      },
+      {
+        text: '取消',
+        onclick: function (item, dialog) {
+          $.ligerDialog.close();
+          $(".l-dialog,.l-window-mask").hide();
+        }
+      }
+    ]
+  }
   switch (templateData.type) {
     case 'Character Encoding Translator':
       url = './dialog/addEncoding.html'
+      width = 650
+      height = 250
       break;
     case 'Template Coder':
       url = './dialog/addTemplate.html'
+      width = 750      
+      height = 500
       break;
     case 'DataBase LookUp' :
       url = './dialog/addDataBase.html'
+      width = 650
+      height = 450
       break;
     case 'Http Client' :
       url = './dialog/addHttpClient.html'
+      width = 650
+      height = 350
       break;
     case 'Soap Client' :
       url = './dialog/addSoapClient.html'
+      width = 650
+      height = 250
       break;
     default:
       url = './dialog/addDefault.html'
+      width = 650
+      height = 200
       break;
-  }
-  if(openStyle === 'add') {
-    title = "添加控件"+ templateData.name
-  } else {
-    title = "编辑控件"+ templateData.name
   }
   $.ligerDialog.open({
     title,
     url,
-    width: 750,
-    height: 500,
-    isResize: true,
-    modal: true,
-    slide: true,
+    width,
+    height,
     data: templateData,
     saveNewTemplateData: function(newTemplateData) {
       flash(newTemplateData, templateData)
       $.ligerDialog.close();
-      $(".l-dialog,.l-window-mask").remove();
+      $(".l-dialog,.l-window-mask").hide();
     },
-    buttons: [
-      {
-        text: '取消',
-        onclick: function (item, dialog) {
-          if (openStyle === 'add') {
-            console.log('add');
-
-          }
-          $.ligerDialog.close();
-          $(".l-dialog,.l-window-mask").remove();
-        }
-      }
-    ]
+    buttons
   })
 }
 

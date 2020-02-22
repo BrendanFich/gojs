@@ -68,9 +68,6 @@
         font-size: 12px;
       }
 
-      .l-table-edit {
-      }
-
       .l-table-edit-td {
         padding: 4px;
       }
@@ -105,7 +102,7 @@
       name="form1"
       id="form1"
       method="post"
-      style="width:700px"
+      style="width: 600px"
       action="/interface/router/comp/addTemplate"
       enctype="multipart/form-data"
     >
@@ -115,7 +112,7 @@
           <td align="right" class="l-table-edit-td" style="width:100px">
             控件名称:
           </td>
-          <td align="left" class="l-table-edit-td" style="width:360px">
+          <td align="left" class="l-table-edit-td" style="width:160px">
             <input
               name="ItemName"
               type="text"
@@ -124,15 +121,8 @@
               value="{{.item.Name}}"
               validate="{required:true,minlength:1,maxlength:20}"
             />
-            <input name="id" type="hidden" id="id" value="{{.item.ID}}" />
-            <input
-              name="nodeid"
-              type="hidden"
-              id="nodeid"
-              value="{{.nodeid}}"
-            />
           </td>
-          <td align="left" style="width:160px"></td>
+          <td align="left"></td>
         </tr>
         <tr>
           <td align="right" class="l-table-edit-td"></td>
@@ -149,8 +139,5 @@
         </tr>
       </table>
     </form>
-    <div style="display:none">
-      <!--  数据统计代码 -->
-    </div>
   </body>
 </html>
