@@ -24,7 +24,6 @@
   <script src="static/jquery-validation/messages_cn.js" type="text/javascript"></script>
   <script src="static/js/go.js"></script>
   <script src="static/js/index.js"></script>
-  <!-- <script src="static/js/showDialog.js"></script> -->
   <style type="text/css">
     body {
       font-size: 12px;
@@ -88,44 +87,6 @@
             "nodeDataArray": [],
             "linkDataArray": []}
         </textarea>
-    </div>
-    <div id="dialog" style="display:none">
-      <form name="form1" id="form1" method="post" style="width:700px" action="/interface/router/comp/addTemplate"
-        enctype="multipart/form-data">
-        <table cellpadding="0" cellspacing="0" class="l-table-edit">
-          <tr>
-            <td align="right" class="l-table-edit-td" style="width:100px">
-              控件名称:
-            </td>
-            <td align="left" class="l-table-edit-td" style="width:360px">
-              <input name="ItemName" type="text" id="ItemName" ltype="text" value=""
-                validate="{required:true,minlength:1,maxlength:20}" />
-              <input name="id" type="hidden" id="id" value="{{.item.ID}}" />
-              <input name="nodeid" type="hidden" id="nodeid" value="{{.nodeid}}" />
-            </td>
-            <td align="left" style="width:160px"></td>
-          </tr>
-          
-          <tr>
-            <td align="right" class="l-table-edit-td" style="width:100px">
-              模板代码:
-            </td>
-            <td align="left" class="l-table-edit-td" colspan="2" style="width:360px">
-              <textarea id="TemplateCode" name="TemplateCode" cols="250" rows="20" class="l-textarea"
-                style="width:99%"></textarea>
-            </td>
-          </tr>
-          <tr>
-            <td align="right" class="l-table-edit-td">
-            </td>
-            <td align="left" class="l-table-edit-td" style="width:160px">
-              <input type="submit" value="提交" id="Button1" class="l-button l-button-submit" name="btnsubmit" />
-            </td>
-            <td align="right">
-            </td>
-          </tr>
-        </table>
-      </form>
     </div>
   </div>
 </body>

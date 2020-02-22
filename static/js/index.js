@@ -1,7 +1,6 @@
 function init() {
   if (window.goSamples) goSamples();
   var objGo = go.GraphObject.make;
-
   myDiagram = objGo(go.Diagram, "myDiagramDiv", {
     // 网格背景
     grid: objGo(
@@ -76,10 +75,10 @@ function init() {
     txn.changes.each(function (e) {
       if (e.modelChange !== "nodeDataArray") return;
       if (e.change === go.ChangedEvent.Insert) {
-        console.log(evt.propertyName + " added node with key: " + e.newValue.key);
-        showDialog(e.No)
+        // console.log(evt.propertyName + " added node with key: " + e.newValue.key);
+        showDialog(e.No, 'add')
       } else if (e.change === go.ChangedEvent.Remove) {
-        console.log(evt.propertyName + " removed node with key: " + e.oldValue.key);
+        // console.log(evt.propertyName + " removed node with key: " + e.oldValue.key);
         
       }
     });
@@ -107,13 +106,11 @@ function init() {
     { locationSpot: go.Spot.Center },
     {
       doubleClick: function (e, node) {
-        // alert("双击");
-        console.log("TCL: init -> node.findNodesOutOf()", node.findLinksConnected().count)
-        showDialog(node.hb)
+        showDialog(node.hb, 'edit')
       },
-      contextClick: function() {
-        alert('右键')
-      }
+      // contextClick: function() {
+      //   alert('右键')
+      // }
     },
     new go.Binding("location", "loc", go.Point.parse).makeTwoWay(
       go.Point.stringify
@@ -152,7 +149,7 @@ function init() {
             width: 35,
             height: 35
           },
-          new go.Binding("source")
+          new go.Binding("source", "type", function(t){ return 'static/img/' + t + '.gif'} )
         ),
         objGo(
           go.TextBlock,
@@ -248,14 +245,14 @@ function init() {
     maxSelectionCount: 1,
     nodeTemplateMap: myDiagram.nodeTemplateMap,
     model: new go.GraphLinksModel([
-      { name: "NoOperation", code: "", type: 'NoOperation', source: "static/img/NoOperation.gif" },
-      { name: "Encoding", code: "", type: 'Encoding', source: "static/img/Encoding.gif" },
-      { name: "Json2Xml", code: "", type: 'Json2Xml', source: "static/img/Json2Xml.gif" },
-      { name: "Xml2Json", code: "", type: 'Xml2Json', source: "static/img/Xml2Json.gif" },
-      { name: "Template", code: "", type: 'Template', source: "static/img/Template.gif" },
-      { name: "Datebase", code: "", type: 'Datebase', source: "static/img/Datebase.gif" },
-      { name: "HttpClient", code: "", type: 'HttpClient', source: "static/img/HttpClient.gif" },
-      { name: "SoapClient", code: "", type: 'SoapClient', source: "static/img/SoapClient.gif" }
+      { name: "NoOperation", type: 'No-operation' },
+      { name: "Encoding", type: 'Character Encoding Translator' },
+      { name: "Json2Xml", type: 'Json Transform To Xml' },
+      { name: "Xml2Json", type: 'Xml Transform To Json' },
+      { name: "Template", type: 'Template Coder' },
+      { name: "Datebase", type: 'DataBase LookUp' },
+      { name: "Http Client", type: 'Http Client' },
+      { name: "Soap Client", type: 'Soap Client' }
     ])
   });
 }
@@ -292,81 +289,71 @@ function loadDiagramProperties() {
   if (pos) myDiagram.initialPosition = go.Point.parse(pos);
 }
 
-function showDialog(templateData) {
-  console.log(templateData);
+function showDialog(templateData, openStyle) {
   $("#ItemName").val(templateData.name)
   $("#TemplateCode").val(templateData.code)
+  var title, url
+  switch (templateData.type) {
+    case 'Character Encoding Translator':
+      url = './dialog/addEncoding.html'
+      break;
+    case 'Template Coder':
+      url = './dialog/addTemplate.html'
+      break;
+    case 'DataBase LookUp' :
+      url = './dialog/addDataBase.html'
+      break;
+    case 'Http Client' :
+      url = './dialog/addHttpClient.html'
+      break;
+    case 'Soap Client' :
+      url = './dialog/addSoapClient.html'
+      break;
+    default:
+      url = './dialog/addDefault.html'
+      break;
+  }
+  if(openStyle === 'add') {
+    title = "添加控件"+ templateData.name
+  } else {
+    title = "编辑控件"+ templateData.name
+  }
   $.ligerDialog.open({
-    // target: $("#dialog"),
-    title: "添加控件"+ templateData.type,
-    url: './add' + templateData.type + '.html',
+    title,
+    url,
     width: 750,
-    height: 480,
+    height: 500,
     isResize: true,
     modal: true,
+    slide: true,
+    data: templateData,
+    saveNewTemplateData: function(newTemplateData) {
+      flash(newTemplateData, templateData)
+      $.ligerDialog.close();
+      $(".l-dialog,.l-window-mask").remove();
+    },
     buttons: [
-      { text: '关闭窗口', onclick: function (item, dialog) { dialog.hide(); } },
-      { text: '提交', onclick: function (item, dialog) { 
-        flash($("#ItemName").val(),$("#TemplateCode").val(),templateData)
-        $.ligerDialog.hide()
-       } }
+      {
+        text: '取消',
+        onclick: function (item, dialog) {
+          if (openStyle === 'add') {
+            console.log('add');
+
+          }
+          $.ligerDialog.close();
+          $(".l-dialog,.l-window-mask").remove();
+        }
+      }
     ]
   })
 }
-  // $(function () {
-  //   $.metadata.setType("attr", "validate");
-  //   var v = $("#form1").validate({
-  //     debug: true,
-  //     errorPlacement: function (lable, element) {
-  //       if (element.hasClass("l-textarea")) {
-  //         element.ligerTip({content: lable.html(), target: element[0]});
-  //       } else if (element.hasClass("l-text-field")) {
-  //         element.parent().ligerTip({content: lable.html(), target: element[0]});
-  //       } else {
-  //         lable.appendTo(element.parents("td:first").next("td"));
-  //       }
-  //     },
-  //     success: function (lable) {
-  //       lable.ligerHideTip();
-  //       lable.remove();
-  //     },
-  //     submitHandler: function (e) {
-  //       // document.form1.submit()
-  //       flash($("#ItemName").val(),$("#TemplateCode").val(),templateData)
-  //       // dialog.hide()
-  //       $.ligerDialog.hide()
-  //     }
-  //   });
-  //   $("#form1").ligerForm();
-  //   $(".l-button-test").click(function () {
-  //     alert(v.element($("#txtName")));
-  //   });
-  // });
-function flash(newItemName, newTemplateCode, oldTemplateData) {
+
+function flash(newTemplateData, oldTemplateData) {
   var model = myDiagram.model;
   //所有模型更改都应该在事务模型中进行
   model.startTransaction("flash");
-  var data = model.nodeDataArray.filter( x => {
-    return x.key === oldTemplateData.key
-  })[0]
-  model.setDataProperty(oldTemplateData, "name", newItemName); // 修改属性
-  model.setDataProperty(oldTemplateData, "code", newTemplateCode); // 修改属性
+  Object.keys(newTemplateData).forEach(function(key){
+    model.setDataProperty(oldTemplateData, key, newTemplateData[key])
+  })
   model.commitTransaction("flash");
 }
-function  test(){
-  console.log('hi');
-  
-}
-// var upflag = {{.errormsg}};
-
-// if (upflag != "") {
-//   if (upflag == "保存成功") {
-//     parent.window.loadtree();
-//     $(".l-bar-button.l-bar-btnload", window.parent.document).click();
-//     parent.$.ligerDialog.close();
-//     parent.$(".l-dialog,.l-window-mask").remove();
-
-//   } else {
-//     alert(upflag);
-//   }
-// }
